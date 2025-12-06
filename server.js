@@ -27,7 +27,8 @@ db.exec(`
         profile TEXT NOT NULL,
         text TEXT NOT NULL,
         time TEXT NOT NULL,
-        timestamp INTEGER NOT NULL
+        timestamp INTEGER NOT NULL,
+        userName TEXT
     )
 `);
 
@@ -50,9 +51,9 @@ function getAllMessages() {
 }
 
 // Add message to database
-function addMessage(profile, text, time) {
-    const stmt = db.prepare('INSERT INTO messages (profile, text, time, timestamp) VALUES (?, ?, ?, ?)');
-    stmt.run(profile, text, time, Date.now());
+function addMessage(profile, text, time, userName = null) {
+    const stmt = db.prepare('INSERT INTO messages (profile, text, time, timestamp, userName) VALUES (?, ?, ?, ?, ?)');
+    stmt.run(profile, text, time, Date.now(), userName);
 }
 
 io.on('connection', (socket) => {
@@ -69,21 +70,22 @@ io.on('connection', (socket) => {
     });
 
     socket.on('send-message', (data) => {
-        const { profile, message, time } = data;
+        const { profile, message, time, userName } = data;
 
         // Save to database
-        addMessage(profile, message, time);
+        addMessage(profile, message, time, userName);
 
         const messageData = {
             profile: profile,
             text: message,
             time: time,
-            timestamp: Date.now()
+            timestamp: Date.now(),
+            userName: userName
         };
 
         // Broadcast to all clients in chat room
         io.to('chat-room').emit('receive-message', messageData);
-        console.log(`Message sent from ${profile}:`, messageData);
+        console.log(`Message sent from ${profile}${userName ? ` (${userName})` : ''}:`, messageData);
     });
 
     socket.on('disconnect', () => {

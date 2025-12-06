@@ -97,12 +97,12 @@ class Profile1App {
         this.socket.on('load-messages', (messages) => {
             this.messagesContainer.innerHTML = '';
             messages.forEach(msg => {
-                this.displayMessage(msg.text, msg.time, msg.profile, msg.profile === 'profile1');
+                this.displayMessage(msg.text, msg.time, msg.profile, msg.profile === 'profile1', msg.userName);
             });
         });
 
         this.socket.on('receive-message', (data) => {
-            this.displayMessage(data.text, data.time, data.profile, data.profile === 'profile1');
+            this.displayMessage(data.text, data.time, data.profile, data.profile === 'profile1', data.userName);
         });
     }
 
@@ -282,11 +282,16 @@ class Profile1App {
         this.messageInput.value = '';
     }
 
-    displayMessage(text, time, fromProfile, isMine) {
+    displayMessage(text, time, fromProfile, isMine, userName = null) {
         const messageDiv = document.createElement('div');
         messageDiv.className = isMine ? 'message sent' : 'message received';
 
-        const profileLabel = fromProfile === 'profile1' ? 'J' : 'Profile 2';
+        let profileLabel;
+        if (fromProfile === 'profile1') {
+            profileLabel = 'J';
+        } else {
+            profileLabel = userName || 'Profile 2';
+        }
         const showLabel = !isMine;
 
         messageDiv.innerHTML = `

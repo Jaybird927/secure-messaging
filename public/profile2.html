@@ -290,6 +290,73 @@
         .btn-save:hover, .btn-cancel:hover {
             transform: translateY(-2px);
         }
+
+        .name-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .name-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .name-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .name-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .name-input:focus {
+            border-color: #667eea;
+        }
+
+        .btn-submit {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-submit:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
@@ -370,6 +437,16 @@
                 <button class="btn-save" id="savePatternBtn">Save Pattern</button>
                 <button class="btn-cancel" id="cancelPatternBtn">Cancel</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Name Input Modal -->
+    <div class="name-modal" id="nameModal">
+        <div class="name-container">
+            <div class="name-title">Welcome!</div>
+            <div class="name-subtitle">Enter your name to start messaging</div>
+            <input type="text" class="name-input" id="nameInput" placeholder="Your name" maxlength="20">
+            <button class="btn-submit" id="submitNameBtn">Continue</button>
         </div>
     </div>
 

@@ -1,4 +1,4 @@
-class Profile1App {
+class Profile2App {
     constructor() {
         this.correctPattern = [1, 2, 3, 4];
         this.currentPattern = [];
@@ -9,6 +9,7 @@ class Profile1App {
         this.mySocketId = null;
         this.isChangingPattern = false;
         this.newPattern = [];
+        this.userName = null;
 
         this.canvas = document.getElementById('canvas');
         this.ctx = this.canvas.getContext('2d');
@@ -28,6 +29,9 @@ class Profile1App {
         this.patternChangeTitle = document.getElementById('patternChangeTitle');
         this.savePatternBtn = document.getElementById('savePatternBtn');
         this.cancelPatternBtn = document.getElementById('cancelPatternBtn');
+        this.nameModal = document.getElementById('nameModal');
+        this.nameInput = document.getElementById('nameInput');
+        this.submitNameBtn = document.getElementById('submitNameBtn');
 
         this.initCanvas();
         this.initDots();
@@ -86,6 +90,12 @@ class Profile1App {
         this.gridChange.addEventListener('touchstart', this.handleTouchChange.bind(this));
         this.gridChange.addEventListener('touchmove', this.handleTouchChange.bind(this));
         this.gridChange.addEventListener('touchend', this.endPatternChange.bind(this));
+
+        // Name modal events
+        this.submitNameBtn.addEventListener('click', () => this.submitName());
+        this.nameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') this.submitName();
+        });
     }
 
     initSocket() {
@@ -249,6 +259,22 @@ class Profile1App {
     unlockApp() {
         this.isUnlocked = true;
         this.lockScreen.style.display = 'none';
+        this.nameModal.style.display = 'flex';
+        this.nameInput.focus();
+    }
+
+    submitName() {
+        const name = this.nameInput.value.trim();
+        if (!name) {
+            this.nameInput.style.borderColor = '#f56565';
+            setTimeout(() => {
+                this.nameInput.style.borderColor = '#ddd';
+            }, 1000);
+            return;
+        }
+
+        this.userName = name;
+        this.nameModal.style.display = 'none';
         this.messagingApp.style.display = 'flex';
         this.messagingApp.style.flexDirection = 'column';
         this.initSocket();
@@ -263,6 +289,8 @@ class Profile1App {
             this.socket.disconnect();
             this.socket = null;
         }
+        this.userName = null;
+        this.nameInput.value = '';
         this.resetPattern();
     }
 
@@ -276,7 +304,8 @@ class Profile1App {
         this.socket.emit('send-message', {
             profile: 'profile2',
             message: text,
-            time: time
+            time: time,
+            userName: this.userName
         });
 
         this.messageInput.value = '';
@@ -467,5 +496,5 @@ class Profile1App {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    new Profile1App();
+    new Profile2App();
 });
