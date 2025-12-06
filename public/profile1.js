@@ -231,7 +231,7 @@ class Profile1App {
             dot.classList.remove('active', 'success', 'error');
         });
         this.clearCanvas();
-        this.status.textContent = 'Draw pattern to unlock Profile 1';
+        this.status.textContent = 'Draw pattern to unlock J';
     }
 
     clearCanvas() {
@@ -286,7 +286,7 @@ class Profile1App {
         const messageDiv = document.createElement('div');
         messageDiv.className = isMine ? 'message sent' : 'message received';
 
-        const profileLabel = fromProfile === 'profile1' ? 'Profile 1' : 'Profile 2';
+        const profileLabel = fromProfile === 'profile1' ? 'J' : 'Profile 2';
         const showLabel = !isMine;
 
         messageDiv.innerHTML = `
