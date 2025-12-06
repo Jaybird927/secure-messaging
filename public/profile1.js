@@ -73,12 +73,12 @@ class Profile1App {
         this.socket.on('load-messages', (messages) => {
             this.messagesContainer.innerHTML = '';
             messages.forEach(msg => {
-                this.displayMessage(msg.text, msg.time, msg.sender === this.socket.id);
+                this.displayMessage(msg.text, msg.time, msg.profile, msg.sender === this.socket.id);
             });
         });
 
         this.socket.on('receive-message', (data) => {
-            this.displayMessage(data.text, data.time, data.sender === this.socket.id);
+            this.displayMessage(data.text, data.time, data.profile, data.sender === this.socket.id);
         });
     }
 
@@ -258,11 +258,16 @@ class Profile1App {
         this.messageInput.value = '';
     }
 
-    displayMessage(text, time, isMine) {
+    displayMessage(text, time, fromProfile, isMine) {
         const messageDiv = document.createElement('div');
         messageDiv.className = isMine ? 'message sent' : 'message received';
+
+        const profileLabel = fromProfile === 'profile1' ? 'Profile 1' : 'Profile 2';
+        const showLabel = !isMine;
+
         messageDiv.innerHTML = `
             <div class="message-bubble">
+                ${showLabel ? `<div style="font-size: 11px; font-weight: bold; margin-bottom: 4px; opacity: 0.8;">${profileLabel}</div>` : ''}
                 <div>${this.escapeHtml(text)}</div>
                 <div class="message-time">${time}</div>
             </div>

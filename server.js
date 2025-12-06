@@ -16,18 +16,16 @@ const io = socketIo(server, {
 app.use(cors());
 app.use(express.static('public'));
 
-const messages = {
-    profile1: [],
-    profile2: []
-};
+const messages = [];
 
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
 
     socket.on('join-profile', (profile) => {
-        socket.join(profile);
-        socket.emit('load-messages', messages[profile] || []);
-        console.log(`User ${socket.id} joined ${profile}`);
+        socket.join('chat-room');
+        socket.profile = profile;
+        socket.emit('load-messages', messages);
+        console.log(`User ${socket.id} joined as ${profile}`);
     });
 
     socket.on('send-message', (data) => {
@@ -36,16 +34,14 @@ io.on('connection', (socket) => {
         const messageData = {
             text: message,
             time: time,
-            sender: socket.id
+            sender: socket.id,
+            profile: profile
         };
 
-        if (!messages[profile]) {
-            messages[profile] = [];
-        }
-        messages[profile].push(messageData);
+        messages.push(messageData);
 
-        io.to(profile).emit('receive-message', messageData);
-        console.log(`Message sent to ${profile}:`, messageData);
+        io.to('chat-room').emit('receive-message', messageData);
+        console.log(`Message sent from ${profile}:`, messageData);
     });
 
     socket.on('disconnect', () => {
