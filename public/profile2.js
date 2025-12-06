@@ -73,12 +73,12 @@ class Profile2App {
         this.socket.on('load-messages', (messages) => {
             this.messagesContainer.innerHTML = '';
             messages.forEach(msg => {
-                this.displayMessage(msg.text, msg.time, msg.profile, msg.sender === this.socket.id);
+                this.displayMessage(msg.text, msg.time, msg.profile, msg.profile === 'profile2');
             });
         });
 
         this.socket.on('receive-message', (data) => {
-            this.displayMessage(data.text, data.time, data.profile, data.sender === this.socket.id);
+            this.displayMessage(data.text, data.time, data.profile, data.profile === 'profile2');
         });
     }
 
