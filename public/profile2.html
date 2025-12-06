@@ -386,10 +386,7 @@
     <div class="messaging-app" id="messagingApp">
         <div class="app-header">
             <h1>Profile 2 Messages</h1>
-            <div style="display: flex; gap: 10px;">
-                <button class="lock-btn" id="changePatternBtn">Change Pattern</button>
-                <button class="lock-btn" id="lockBtn">Lock</button>
-            </div>
+            <button class="lock-btn" id="lockBtn">Lock</button>
         </div>
 
         <div class="messages-container" id="messagesContainer">
@@ -413,38 +410,11 @@
         </div>
     </div>
 
-    <!-- Pattern Change Modal -->
-    <div class="pattern-change-modal" id="patternChangeModal">
-        <div class="pattern-change-container">
-            <div class="pattern-change-title" id="patternChangeTitle">Draw your new pattern</div>
-
-            <div class="pattern-container">
-                <canvas id="canvasChange"></canvas>
-                <div class="grid" id="gridChange">
-                    <div class="dot" data-num="1"></div>
-                    <div class="dot" data-num="2"></div>
-                    <div class="dot" data-num="3"></div>
-                    <div class="dot" data-num="4"></div>
-                    <div class="dot" data-num="5"></div>
-                    <div class="dot" data-num="6"></div>
-                    <div class="dot" data-num="7"></div>
-                    <div class="dot" data-num="8"></div>
-                    <div class="dot" data-num="9"></div>
-                </div>
-            </div>
-
-            <div class="pattern-change-buttons">
-                <button class="btn-save" id="savePatternBtn">Save Pattern</button>
-                <button class="btn-cancel" id="cancelPatternBtn">Cancel</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Name Input Modal -->
     <div class="name-modal" id="nameModal">
         <div class="name-container">
             <div class="name-title">Welcome!</div>
-            <div class="name-subtitle">Enter your name to start messaging</div>
+            <div class="name-subtitle">Enter your name for this session</div>
             <input type="text" class="name-input" id="nameInput" placeholder="Your name" maxlength="20">
             <button class="btn-submit" id="submitNameBtn">Continue</button>
         </div>
