@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Messaging</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .container {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 32px;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        .profiles {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .profile-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            border-radius: 15px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s;
+            min-width: 200px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+        }
+
+        .profile-card h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .profile-card .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .profile-card p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Secure Messaging</h1>
+        <p>Select your profile to access messages</p>
+
+        <div class="profiles">
+            <a href="profile1.html" class="profile-card">
+                <div class="icon">👤</div>
+                <h2>Profile 1</h2>
+                <p>Tap to unlock</p>
+            </a>
+
+            <a href="profile2.html" class="profile-card">
+                <div class="icon">👤</div>
+                <h2>Profile 2</h2>
+                <p>Tap to unlock</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

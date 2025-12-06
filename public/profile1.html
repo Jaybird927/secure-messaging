@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile 1 - Secure Messaging</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            user-select: none;
+        }
+
+        .lock-screen {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .messaging-app {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            height: 90vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-header h1 {
+            font-size: 24px;
+        }
+
+        .lock-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .lock-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .status {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #333;
+            min-height: 30px;
+        }
+
+        .pattern-container {
+            position: relative;
+            width: 350px;
+            height: 350px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .grid {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 40px;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+        }
+
+        .dot {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #ddd;
+            border: 3px solid #aaa;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dot:hover {
+            transform: scale(1.1);
+        }
+
+        .dot.active {
+            background: #667eea;
+            border-color: #667eea;
+            transform: scale(1.2);
+        }
+
+        .dot.success {
+            background: #48bb78;
+            border-color: #48bb78;
+        }
+
+        .dot.error {
+            background: #f56565;
+            border-color: #f56565;
+        }
+
+        .messages-container {
+            height: calc(100% - 140px);
+            overflow-y: auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .message.sent {
+            flex-direction: row-reverse;
+        }
+
+        .message-bubble {
+            max-width: 60%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+
+        .message.received .message-bubble {
+            background: white;
+            color: #333;
+        }
+
+        .message.sent .message-bubble {
+            background: #667eea;
+            color: white;
+        }
+
+        .message-time {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        .input-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #ddd;
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .message-input:focus {
+            border-color: #667eea;
+        }
+
+        .send-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .back-link a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+        }
+
+        .back-link a:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="lock-screen" id="lockScreen">
+        <div class="status" id="status">Draw pattern to unlock Profile 1</div>
+
+        <div class="pattern-container">
+            <canvas id="canvas"></canvas>
+            <div class="grid" id="grid">
+                <div class="dot" data-num="1"></div>
+                <div class="dot" data-num="2"></div>
+                <div class="dot" data-num="3"></div>
+                <div class="dot" data-num="4"></div>
+                <div class="dot" data-num="5"></div>
+                <div class="dot" data-num="6"></div>
+                <div class="dot" data-num="7"></div>
+                <div class="dot" data-num="8"></div>
+                <div class="dot" data-num="9"></div>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="index.html">← Back to profiles</a>
+        </div>
+    </div>
+
+    <div class="messaging-app" id="messagingApp">
+        <div class="app-header">
+            <h1>Profile 1 Messages</h1>
+            <button class="lock-btn" id="lockBtn">Lock</button>
+        </div>
+
+        <div class="messages-container" id="messagesContainer">
+            <div class="message received">
+                <div class="message-bubble">
+                    <div>Hey! How are you?</div>
+                    <div class="message-time">10:30 AM</div>
+                </div>
+            </div>
+            <div class="message sent">
+                <div class="message-bubble">
+                    <div>I'm good, thanks! How about you?</div>
+                    <div class="message-time">10:32 AM</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <input type="text" class="message-input" id="messageInput" placeholder="Type a message...">
+            <button class="send-btn" id="sendBtn">Send</button>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="profile1.js"></script>
+</body>
+</html>
