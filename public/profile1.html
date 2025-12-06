@@ -230,6 +230,66 @@
         .back-link a:hover {
             opacity: 1;
         }
+
+        .pattern-change-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pattern-change-container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .pattern-change-title {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .pattern-change-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .btn-save {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel {
+            background: #f56565;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-save:hover, .btn-cancel:hover {
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
@@ -259,7 +319,10 @@
     <div class="messaging-app" id="messagingApp">
         <div class="app-header">
             <h1>Profile 1 Messages</h1>
-            <button class="lock-btn" id="lockBtn">Lock</button>
+            <div style="display: flex; gap: 10px;">
+                <button class="lock-btn" id="changePatternBtn">Change Pattern</button>
+                <button class="lock-btn" id="lockBtn">Lock</button>
+            </div>
         </div>
 
         <div class="messages-container" id="messagesContainer">
@@ -280,6 +343,33 @@
         <div class="input-container">
             <input type="text" class="message-input" id="messageInput" placeholder="Type a message...">
             <button class="send-btn" id="sendBtn">Send</button>
+        </div>
+    </div>
+
+    <!-- Pattern Change Modal -->
+    <div class="pattern-change-modal" id="patternChangeModal">
+        <div class="pattern-change-container">
+            <div class="pattern-change-title" id="patternChangeTitle">Draw your new pattern</div>
+
+            <div class="pattern-container">
+                <canvas id="canvasChange"></canvas>
+                <div class="grid" id="gridChange">
+                    <div class="dot" data-num="1"></div>
+                    <div class="dot" data-num="2"></div>
+                    <div class="dot" data-num="3"></div>
+                    <div class="dot" data-num="4"></div>
+                    <div class="dot" data-num="5"></div>
+                    <div class="dot" data-num="6"></div>
+                    <div class="dot" data-num="7"></div>
+                    <div class="dot" data-num="8"></div>
+                    <div class="dot" data-num="9"></div>
+                </div>
+            </div>
+
+            <div class="pattern-change-buttons">
+                <button class="btn-save" id="savePatternBtn">Save Pattern</button>
+                <button class="btn-cancel" id="cancelPatternBtn">Cancel</button>
+            </div>
         </div>
     </div>
 
