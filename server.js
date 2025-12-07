@@ -73,8 +73,8 @@ io.on('connection', (socket) => {
         socket.profile = profile;
         socket.userName = userName;
 
-        // Send messages filtered by userName if provided
-        const messages = userName ? getMessagesByUserName(userName) : getAllMessages();
+        // Send all messages from database
+        const messages = getAllMessages();
         socket.emit('load-messages', messages);
         console.log(`User ${socket.id} joined as ${profile}${userName ? ` (${userName})` : ''}`);
     });
