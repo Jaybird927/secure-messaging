@@ -79,7 +79,10 @@ class Profile2App {
         this.socket = io();
         this.mySocketId = this.socket.id;
 
-        this.socket.emit('join-profile', 'profile2');
+        this.socket.emit('join-profile', {
+            profile: 'profile2',
+            userName: this.userName
+        });
 
         this.socket.on('load-messages', (messages) => {
             this.messagesContainer.innerHTML = '';

@@ -50,6 +50,12 @@ function getAllMessages() {
     return stmt.all();
 }
 
+// Get messages for a specific userName
+function getMessagesByUserName(userName) {
+    const stmt = db.prepare('SELECT * FROM messages WHERE userName = ? ORDER BY timestamp ASC');
+    return stmt.all(userName);
+}
+
 // Add message to database
 function addMessage(profile, text, time, userName = null) {
     const stmt = db.prepare('INSERT INTO messages (profile, text, time, timestamp, userName) VALUES (?, ?, ?, ?, ?)');
@@ -59,14 +65,18 @@ function addMessage(profile, text, time, userName = null) {
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
 
-    socket.on('join-profile', (profile) => {
+    socket.on('join-profile', (data) => {
+        const profile = typeof data === 'string' ? data : data.profile;
+        const userName = typeof data === 'object' ? data.userName : null;
+
         socket.join('chat-room');
         socket.profile = profile;
+        socket.userName = userName;
 
-        // Send all messages from database
-        const messages = getAllMessages();
+        // Send messages filtered by userName if provided
+        const messages = userName ? getMessagesByUserName(userName) : getAllMessages();
         socket.emit('load-messages', messages);
-        console.log(`User ${socket.id} joined as ${profile}`);
+        console.log(`User ${socket.id} joined as ${profile}${userName ? ` (${userName})` : ''}`);
     });
 
     socket.on('send-message', (data) => {
