@@ -1,14 +1,12 @@
 class Profile1App {
     constructor() {
-        this.correctPattern = [1, 2, 3, 4];
+        this.correctPattern = [7, 2, 9, 5, 4, 3];
         this.currentPattern = [];
         this.isDrawing = false;
         this.dots = [];
         this.isUnlocked = false;
         this.socket = null;
         this.mySocketId = null;
-        this.isChangingPattern = false;
-        this.newPattern = [];
 
         this.canvas = document.getElementById('canvas');
         this.ctx = this.canvas.getContext('2d');
@@ -20,19 +18,10 @@ class Profile1App {
         this.messageInput = document.getElementById('messageInput');
         this.sendBtn = document.getElementById('sendBtn');
         this.lockBtn = document.getElementById('lockBtn');
-        this.changePatternBtn = document.getElementById('changePatternBtn');
-        this.patternChangeModal = document.getElementById('patternChangeModal');
-        this.canvasChange = document.getElementById('canvasChange');
-        this.ctxChange = this.canvasChange.getContext('2d');
-        this.gridChange = document.getElementById('gridChange');
-        this.patternChangeTitle = document.getElementById('patternChangeTitle');
-        this.savePatternBtn = document.getElementById('savePatternBtn');
-        this.cancelPatternBtn = document.getElementById('cancelPatternBtn');
 
         this.initCanvas();
         this.initDots();
         this.initEventListeners();
-        this.loadPattern();
     }
 
     initCanvas() {
@@ -73,19 +62,6 @@ class Profile1App {
         });
 
         this.lockBtn.addEventListener('click', () => this.lockApp());
-        this.changePatternBtn.addEventListener('click', () => this.openPatternChange());
-        this.savePatternBtn.addEventListener('click', () => this.saveNewPattern());
-        this.cancelPatternBtn.addEventListener('click', () => this.closePatternChange());
-
-        // Pattern change modal events
-        this.gridChange.addEventListener('mousedown', this.startPatternChange.bind(this));
-        this.gridChange.addEventListener('mousemove', this.continuePatternChange.bind(this));
-        this.gridChange.addEventListener('mouseup', this.endPatternChange.bind(this));
-        this.gridChange.addEventListener('mouseleave', this.endPatternChange.bind(this));
-
-        this.gridChange.addEventListener('touchstart', this.handleTouchChange.bind(this));
-        this.gridChange.addEventListener('touchmove', this.handleTouchChange.bind(this));
-        this.gridChange.addEventListener('touchend', this.endPatternChange.bind(this));
     }
 
     initSocket() {
@@ -314,160 +290,6 @@ class Profile1App {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
-    }
-
-    // Pattern changing methods
-    loadPattern() {
-        const saved = localStorage.getItem('profile1_pattern');
-        if (saved) {
-            this.correctPattern = JSON.parse(saved);
-        }
-    }
-
-    savePattern(pattern) {
-        localStorage.setItem('profile1_pattern', JSON.stringify(pattern));
-        this.correctPattern = pattern;
-    }
-
-    openPatternChange() {
-        this.patternChangeModal.style.display = 'flex';
-        this.newPattern = [];
-        this.patternChangeTitle.textContent = 'Draw your new pattern (at least 4 dots)';
-        this.canvasChange.width = this.canvasChange.parentElement.offsetWidth;
-        this.canvasChange.height = this.canvasChange.parentElement.offsetHeight;
-    }
-
-    closePatternChange() {
-        this.patternChangeModal.style.display = 'none';
-        this.newPattern = [];
-        this.clearChangePattern();
-    }
-
-    saveNewPattern() {
-        if (this.newPattern.length < 4) {
-            this.patternChangeTitle.textContent = 'Pattern too short! Need at least 4 dots';
-            this.patternChangeTitle.style.color = '#f56565';
-            setTimeout(() => {
-                this.patternChangeTitle.textContent = 'Draw your new pattern (at least 4 dots)';
-                this.patternChangeTitle.style.color = '#333';
-            }, 2000);
-            return;
-        }
-
-        this.savePattern(this.newPattern);
-        this.patternChangeTitle.textContent = '✓ Pattern saved successfully!';
-        this.patternChangeTitle.style.color = '#48bb78';
-
-        setTimeout(() => {
-            this.closePatternChange();
-            this.patternChangeTitle.style.color = '#333';
-        }, 1500);
-    }
-
-    startPatternChange(e) {
-        if (e.target.classList.contains('dot')) {
-            this.isChangingPattern = true;
-            this.addDotToChangePattern(e.target);
-        }
-    }
-
-    continuePatternChange(e) {
-        if (!this.isChangingPattern) return;
-
-        const element = e.target || document.elementFromPoint(e.clientX, e.clientY);
-        if (element && element.classList.contains('dot')) {
-            this.addDotToChangePattern(element);
-        }
-
-        this.drawChangePattern(e.clientX, e.clientY);
-    }
-
-    endPatternChange() {
-        if (!this.isChangingPattern) return;
-        this.isChangingPattern = false;
-        this.clearChangeCanvas();
-    }
-
-    addDotToChangePattern(dotElement) {
-        const num = parseInt(dotElement.dataset.num);
-
-        if (!this.newPattern.includes(num)) {
-            this.newPattern.push(num);
-            dotElement.classList.add('active');
-            this.patternChangeTitle.textContent = `Pattern: ${this.newPattern.join(' → ')}`;
-        }
-    }
-
-    drawChangePattern(mouseX, mouseY) {
-        this.clearChangeCanvas();
-
-        if (this.newPattern.length === 0) return;
-
-        const dotsChange = [];
-        this.gridChange.querySelectorAll('.dot').forEach(dotEl => {
-            const num = parseInt(dotEl.dataset.num);
-            const rect = dotEl.getBoundingClientRect();
-            const containerRect = this.gridChange.getBoundingClientRect();
-            dotsChange.push({
-                num: num,
-                x: rect.left + rect.width / 2 - containerRect.left,
-                y: rect.top + rect.height / 2 - containerRect.top
-            });
-        });
-
-        this.ctxChange.strokeStyle = '#667eea';
-        this.ctxChange.lineWidth = 4;
-        this.ctxChange.lineCap = 'round';
-        this.ctxChange.lineJoin = 'round';
-
-        this.ctxChange.beginPath();
-
-        const firstDot = dotsChange.find(d => d.num === this.newPattern[0]);
-        this.ctxChange.moveTo(firstDot.x, firstDot.y);
-
-        for (let i = 1; i < this.newPattern.length; i++) {
-            const dot = dotsChange.find(d => d.num === this.newPattern[i]);
-            this.ctxChange.lineTo(dot.x, dot.y);
-        }
-
-        if (this.isChangingPattern && mouseX && mouseY) {
-            const containerRect = this.gridChange.getBoundingClientRect();
-            const relX = mouseX - containerRect.left;
-            const relY = mouseY - containerRect.top;
-            this.ctxChange.lineTo(relX, relY);
-        }
-
-        this.ctxChange.stroke();
-    }
-
-    clearChangePattern() {
-        this.newPattern = [];
-        this.gridChange.querySelectorAll('.dot').forEach(dot => {
-            dot.classList.remove('active', 'success', 'error');
-        });
-        this.clearChangeCanvas();
-    }
-
-    clearChangeCanvas() {
-        this.ctxChange.clearRect(0, 0, this.canvasChange.width, this.canvasChange.height);
-    }
-
-    handleTouchChange(e) {
-        e.preventDefault();
-        const touch = e.touches[0];
-        if (!touch) return;
-
-        const fakeEvent = {
-            clientX: touch.clientX,
-            clientY: touch.clientY,
-            target: document.elementFromPoint(touch.clientX, touch.clientY)
-        };
-
-        if (e.type === 'touchstart') {
-            this.startPatternChange(fakeEvent);
-        } else if (e.type === 'touchmove') {
-            this.continuePatternChange(fakeEvent);
-        }
     }
 }
 
